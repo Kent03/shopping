@@ -1,3 +1,4 @@
+@section('title', 'Cửa hàng')
 <main id="main" class="main-site left-sidebar">
 
 <div class="container">
@@ -53,13 +54,40 @@
                 </div>
 
             </div><!--end wrap shop control-->
+            <style>
+                .product-wish{
+                    position: absolute;
+                    top: 10%;
+                    left: 0;
+                    z-index: 99;
+                    right: 30px;
+                    text-align: right;
+                    padding-top: 0;
+                }
+                .product-wish .fa{
+                    color: #cbcbcb;
+                    font-size: 32px;
+                }
+                .product-wish .fa:hover{
+                    color: #ff7007;
+                }
+                .fill-heart{
+                    color: #ff7007!important;
+
+                }
+            </style>
 
             <div class="row">
 
                 <ul class="product-list grid-products equal-container">
-                   @foreach ($products as $product)
+                    <!-- trái tim cho sản phẩm yêu thích -->
+                   @php
+                       $witems=Cart::instance('wishlist')->content()->pluck('id');
+                   @endphp
+                 <!-- trái tim cho sản phẩm yêu thích -->
+
+                    @foreach ($products as $product)
                        
-                   
                     <li class="col-lg-4 col-md-6 col-sm-6 col-xs-6 ">
                         <div class="product product-style-3 equal-elem ">
                             <div class="product-thumnail">
@@ -70,7 +98,15 @@
                             <div class="product-info">
                                 <a href="{{route('product.details',['slug'=>$product->slug])}}" class="product-name"><span>{{$product->name}}</span></a>
                                 <div class="wrap-price"><span class="product-price">{{$product->regular_price}}</span></div>
-                                <a href="#" class="btn add-to-cart" wire:click="store('{{$product->id}}','{{$product->name}}','{{$product->regular_price}}')">Thêm vào giỏ hàng</a>
+                                <a href="#" class="btn add-to-cart" wire:click.prevent="store('{{$product->id}}','{{$product->name}}','{{$product->regular_price}}')">Thêm vào giỏ hàng</a>
+                           <div class="product-wish">
+                               @if ($witems->contains($product->id))
+                               <a href="#"><i class="fa fa-heart fill-heart" wire:click.prevent="removeFromWishlist('{{$product->id}}')"></i></a>
+                                @else
+                              <a href="#"><i class="fa fa-heart" wire:click.prevent="addToWishlist('{{$product->id}}','{{$product->name}}','{{$product->regular_price}}')"></i></a>
+                             
+                                @endif
+                           </div>
                             </div>
                         </div>
                     </li>
@@ -128,17 +164,12 @@
             </div><!-- brand widget-->
 
             <div class="widget mercado-widget filter-widget price-filter">
-                <h2 class="widget-title">Price</h2>
-                <div class="widget-content">
-                    <div id="slider-range"></div>
-                    <p>
-                        <label for="amount">Price:</label>
-                        <input type="text" id="amount" readonly>
-                        <button class="filter-submit">Filter</button>
-                    </p>
+                <h2 class="widget-title">Price <span class="text-info">${{$min_price}} - ${{$max_price}} </span></h2>
+                <div class="widget-content" style="padding:10px 5px 40px 5px;">
+                    <div id="slider"wire:ignore></div>
                 </div>
             </div><!-- Price-->
-
+            <br><br>
             <div class="widget mercado-widget filter-widget">
                 <h2 class="widget-title">Color</h2>
                 <div class="widget-content">
@@ -238,3 +269,26 @@
 
 </div><!--end container-->
 </main>
+@push('scripts')
+    <script>
+        var slider=document.getElementById('slider');
+        noUiSlider.create(slider,{
+            start:[1,1000],
+            connect:true,
+            range:{
+                'min':1,
+                'max':1000
+            },
+            pips:{
+                mode:'steps',
+                stepped:true,
+                density:4
+            }
+        });
+        slider.noUiSlider.on('update',function(value){
+            @this.set('min_price',value[0]);
+            @this.set('max_price',value[1]);
+        });
+    </script>
+    
+@endpush

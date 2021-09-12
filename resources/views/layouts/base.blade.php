@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Home</title>	
+	<title>@yield('title')</title>	
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
 	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,400italic,700,700italic,900,900italic&amp;subset=latin,latin-ext" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Open%20Sans:300,400,400italic,600,600italic,700,700italic&amp;subset=latin,latin-ext" rel="stylesheet">
@@ -17,7 +17,17 @@
 	<link rel="stylesheet" type="text/css" href="{{asset('assets/css/chosen.min.css')}}">
 	<link rel="stylesheet" type="text/css" href="{{asset('assets/css/style.css')}}">
 	<link rel="stylesheet" type="text/css" href="{{asset('assets/css/color-01.css')}}">
-    @livewireStyles
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
+	<!-- đếm ngược thời gian -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" integrity="sha512-aEe/ZxePawj0+G2R+AaIxgrQuKT68I28qh+wgLrcAJOz3rxCP+TwrK5SPN+E5I+1IQjNtcfvb96HDagwrKRdBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<!--lọc giá-->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.css" integrity="sha512-KRrxEp/6rgIme11XXeYvYRYY/x6XPGwk0RsIC6PyMRc072vj2tcjBzFmn939xzjeDhj0aDO7TDMd7Rbz3OEuBQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<!--animation-->
+	<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+	
+	@livewireStyles
 </head>
 <body class="home-page home-01 ">
 
@@ -38,7 +48,7 @@
 						<div class="topbar-menu left-menu">
 							<ul>
 								<li class="menu-item" >
-									<a title="Hotline: (+123) 456 789" href="#" ><span class="icon label-before fa fa-mobile"></span>Hotline: (+123) 456 789</a>
+									<a title="Hotline: (+123) 456 789" style="color: white;" href="#" ><span class="icon label-before fa fa-mobile"></span>Hotline: (+123) 456 789</a>
 								</li>
 							</ul>
 						</div>
@@ -73,13 +83,31 @@
 									@auth
 										@if(Auth::user()->utype === 'ADM')
 										<li class="menu-item menu-item-has-children parent" >
-									<a title="My account" href="#">Tài khoản ({{Auth::user()->name}})<i class="fa fa-angle-down" aria-hidden="true"></i></a>
+									<a title="My account" style="color: white;" href="#">Tài khoản ({{Auth::user()->name}})<i class="fa fa-angle-down" aria-hidden="true"></i></a>
 									<ul class="submenu curency" >
 										<li class="menu-item" >
 											<a title="Dashboard" href="{{route('admin.dashboard')}}">Dashboard</a>
 										</li>
 										<li class="menu-item" >
-											<a title="Dashboard" href="{{route('logout')}}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+											<a title="categories" href="{{route('admin.categories')}}">Các danh mục</a>
+										</li>
+										<li class="menu-item" >
+											<a title="products" href="{{route('admin.products')}}">Sản phẩm</a>
+										</li>
+										<li class="menu-item" >
+											<a title="Manage Home Slider" href="{{route('admin.homeslider')}}">Quản lý slider</a>
+										</li>
+										<li class="menu-item" >
+											<a title="Manage Home Categories" href="{{route('admin.homecategories')}}">Quản lý chọn danh mục home</a>
+										</li>
+										<li class="menu-item" >
+											<a title="Sale" href="{{route('admin.sale')}}">Quản lý Sale</a>
+										</li>
+										<li class="menu-item" >
+											<a title="Mã giảm giá" href="{{route('admin.coupons')}}">Mã giảm giá</a>
+										</li>
+										<li class="menu-item" >
+											<a title="Dashboard" href="{{route('logout')}}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Đăng xuất</a>
 										</li>
 										<form action="{{route('logout')}}" method="POST" id="logout-form">
 											@csrf
@@ -106,8 +134,8 @@
 										@endif
 									
 								@else
-								<li class="menu-item" ><a title="Register or Login" href="{{route('login')}}">Đăng nhập</a></li>
-								<li class="menu-item" ><a title="Register or Login" href="{{route('register')}}">Đăng ký</a></li>
+								<li class="menu-item" ><a title="Register or Login" href="{{route('login')}}" style="color: white;">Đăng nhập</a></li>
+								<li class="menu-item" ><a title="Register or Login" href="{{route('register')}}" style="color: white;">Đăng ký</a></li>
 									@endif
 								@endif
 							</ul>
@@ -119,7 +147,7 @@
 					<div class="mid-section main-info-area">
 
 						<div class="wrap-logo-top left-section">
-							<a href="index.html" class="link-to-home"><img src="{{asset('assets/images/logo-top-1.png')}}" alt="mercado"></a>
+							<a href="/" class="link-to-home"><img src="{{asset('assets/images/logo-top-1.png')}}" width="50%" alt="mercado"></a>
 						</div>
 
 						<div class="wrap-search center-section">
@@ -127,27 +155,11 @@
 						</div>
 
 						<div class="wrap-icon right-section">
-							<div class="wrap-icon-section wishlist">
-								<a href="#" class="link-direction">
-									<i class="fa fa-heart" aria-hidden="true"></i>
-									<div class="left-info">
-										<span class="index">0 item</span>
-										<span class="title">Ưa thích</span>
-									</div>
-								</a>
-							</div>
-							<div class="wrap-icon-section minicart">
-								<a href="#" class="link-direction">
-									<i class="fa fa-shopping-basket" aria-hidden="true"></i>
-									<div class="left-info">
-										@if (Cart::count()>0)
-											
-										@endif
-										<span class="index">{{Cart::count()}}</span>
-										<span class="title">GIỎ HÀNG</span>
-									</div>
-								</a>
-							</div>
+						@livewire('wishlist-count-component')
+
+
+						@livewire('cart-count-component')
+
 							<div class="wrap-icon-section show-up-after-1024">
 								<a href="#" class="mobile-navigation">
 									<span></span>
@@ -164,7 +176,7 @@
 					<div class="header-nav-section">
 						<div class="container">
 							<ul class="nav menu-nav clone-main-menu" id="mercado_haead_menu" data-menuname="Sale Info" >
-								<li class="menu-item"><a href="#" class="link-term">Weekly Featured</a><span class="nav-label hot-label">hot</span></li>
+								<li class="menu-item"><a href="#" class="link-term">Tuần lễ vàng</a><span class="nav-label hot-label">hot</span></li>
 								<li class="menu-item"><a href="#" class="link-term">HÀNG BÁN HOT</a><span class="nav-label hot-label">hot</span></li>
 								<li class="menu-item"><a href="#" class="link-term">Hàng mới về</a><span class="nav-label hot-label">hot</span></li>
 								<li class="menu-item"><a href="#" class="link-term">Bán chạy nhất</a><span class="nav-label hot-label">hot</span></li>
@@ -187,6 +199,9 @@
 								</li>
 								<li class="menu-item">
 									<a href="/checkout" class="link-term mercado-item-title">Thanh toán</a>
+								</li>
+								<li class="menu-item">
+									<a href="/new" class="link-term mercado-item-title">Bản tin</a>
 								</li>
 								<li class="menu-item">
 									<a href="contact-us.html" class="link-term mercado-item-title">Liên hệ</a>
@@ -279,10 +294,10 @@
 						<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
 
 							<div class="wrap-footer-item">
-								<h3 class="item-header">Hot Line</h3>
+								<h3 class="item-header">HotLine</h3>
 								<div class="item-content">
 									<div class="wrap-hotline-footer">
-										<span class="desc">Call Us toll Free</span>
+										<span class="desc">Miễn phí cuộc gọi</span>
 										<b class="phone-number">(+123) 456 789 - (+123) 666 888</b>
 									</div>
 								</div>
@@ -341,7 +356,7 @@
 
 						<div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
 							<div class="wrap-footer-item">
-								<h3 class="item-header">Chúng tôi sử dụng phương thức thanh toán an toàn:</h3>
+								<h3 class="item-header">thanh toán an toàn hơn</h3>
 								<div class="item-content">
 									<div class="wrap-list-item wrap-gallery">
 										<img src="{{asset('assets/images/payment.png')}}" style="max-width: 260px;">
@@ -386,7 +401,7 @@
 
 				<div class="wrap-back-link">
 					<div class="container">
-						<div class="back-link-box">
+						<!-- <div class="back-link-box">
 							<h3 class="backlink-title">Quick Links</h3>
 							<div class="back-link-row">
 								<ul class="list-back-link" >
@@ -430,7 +445,7 @@
 								</ul>
 
 							</div>
-						</div>
+						</div> -->
 					</div>
 				</div>
 
@@ -462,11 +477,27 @@
 	<script src="{{asset('assets/js/bootstrap.min.js')}}"></script>
 	<script src="{{asset('assets/js/jquery.flexslider.js')}}"></script>
 	<!-- <script src="{{asset('assets/js/chosen.jquery.min.js')}}"></script> -->
+	
 	<script src="{{asset('assets/js/owl.carousel.min.js')}}"></script>
 	<script src="{{asset('assets/js/jquery.countdown.min.js')}}"></script>
 	<script src="{{asset('assets/js/jquery.sticky.js')}}"></script>
 	<script src="{{asset('assets/js/functions.js')}}"></script>
-    @livewireScripts
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+	<!-- bộ đếm ngược time -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js" integrity="sha512-GDey37RZAxFkpFeJorEUwNoIbkTwsyC736KNSYucu1WJWFK9qTdzYub8ATxktr6Dwke7nbFaioypzbDOQykoRg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- bộ lọc giá -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.min.js" integrity="sha512-EnXkkBUGl2gBm/EIZEgwWpQNavsnBbeMtjklwAa7jLj60mJk932aqzXFmdPKCG6ge/i8iOCK0Uwl1Qp+S0zowg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<!-- tương tự ckeditor -->
+	<script src="https://cdn.tiny.cloud/1/suh9cvx9lvyrywq0tkcyssxumh1wkyq4syk1k4x1kwr6rlfy/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+	
+	<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+	
+    @livewireScripts     <!-- dung chung-->
+	 @stack('scripts')    <!--viet doạn js ngay tại form cần đến -->
 </body>
 </html>
 
