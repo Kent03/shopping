@@ -51,7 +51,7 @@
 														
 			</ul>
 			@else
-				<p>Giỏ đang trống</p>
+				<p class="text-center">Giỏ đang trống</p>
 			@endif
 		</div>
 
@@ -64,15 +64,45 @@
 			
 				<h4 class="title-box">Order Summary</h4>
 				<p class="summary-info"><span class="title">Giá</span><b class="index">${{Cart::instance('cart')->subtotal()}}</b></p>
+				 @if (Session::has('coupon'))  <!--nếu có mã  -->
+				<p class="summary-info"><span class="title">Giảm giá({{Session::get('coupon')['code']}})</span><b class="index">$</b></p>
+				<p class="summary-info"><span class="title">Thuế({{config('cart.tax')}}%)</span><b class="index">$</b></p>
+				<p class="summary-info"><span class="title">Tổng sau khi đã giảm giá</span><b class="index">$</b></p>
+				<p class="summary-info total-info "><span class="title">Tổng</span><b class="index">$</b></p>
+
+				 @else  <!--nếu không có thì xử lý theo kiểu cart bình thường  -->
 				<p class="summary-info"><span class="title">Thuế</span><b class="index">${{Cart::instance('cart')->tax()}}</b></p>
 				<p class="summary-info"><span class="title">Phí vận chuyển</span><b class="index">Miễn phí vận chuyển</b></p>
 				<p class="summary-info total-info "><span class="title">Tổng</span><b class="index">${{Cart::instance('cart')->total()}}</b></p>
+				@endif
+				
 			
 			</div>
-			<div class="checkout-info">
+			@if (!Session::has('coupon'))
+				<div class="checkout-info">
 				<label class="checkbox-field">
-					<input class="frm-input " name="have-code" id="have-code" value="" type="checkbox"><span>MÃ GIẢM GIÁ</span>
+					<input class="frm-input " name="have-code" id="have-code" value="1" type="checkbox" wire:model="haveCouponCode"><span>Nhập mã giảm giá</span>
 				</label>
+				@if ($haveCouponCode==1)
+				<div class="summary-item">
+					<form>
+						<!-- <h4 class="title-box">Mã giảm giá</h4> -->
+						@if (Session::has('Thông báo'))
+                   <div class="alert alert-success" role="alert">{{Session::get('Thông báo')}}</div>
+                        @endif
+						<p class="row-in-form">
+							<!-- <label for="coupon-code">Nhập mã giảm giá</label> -->
+							<input type="text" name="coupon-code" id=""wire:model="couponCode">
+
+						</p>
+						<button type="submit" class="btn btn-small">Áp dụng</button>
+
+					</form>
+				</div>	
+				@endif
+			@endif
+			
+				
 				<a class="btn btn-checkout" href="checkout.html">THANH TOÁN</a>
 				<a class="link-to-shop" href="shop.html">Continue Shopping<i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a>
 			</div>
